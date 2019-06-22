@@ -74,6 +74,9 @@ function showFullInfo() {
     movie.innerHTML = '<h2 class="col-12 text-center text-danger">Произошла ошибка.<br> Повторите позже.</h2>';
   }
 
+  const typeMedia = this.dataset.type;
+  const idMedia = this.dataset.id;
+
   fetch(url)
     .then(function (value) {
       if (value.status !== 200) {
@@ -99,8 +102,14 @@ function showFullInfo() {
 
         <p>Описание: ${output.overview}</p>
 
+        <br>
+        <div class="youtube"></div>
+
       </div>
       `;
+
+      getVideo(typeMedia, idMedia);
+
     })
     .catch(function (reason) {
       movie.innerHTML = 'Что то пошло не так. Перезагрузите страницу';
@@ -149,3 +158,34 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
 });
+
+function getVideo(type, id) {
+  let youtube = movie.querySelector('.youtube');
+  const server = ` https://api.themoviedb.org/3/${type}/${id}/videos?api_key=${MY_API_KEY}&language=ru`;
+
+  fetch(server)
+    .then((value) => {
+      if (value.status !== 200) {
+        return Promise.reject(new Error(value.status));
+      }
+
+      return value.json();
+    })
+    .then((output) => {
+      let videoFrame = '<h5 class="text-info">Трейлеры</h5>';
+
+      if(output.results.length === 0) {
+        videoFrame = '<p>Видео отсутствует</p>';
+      }
+
+      output.results.forEach((item) => {
+        videoFrame += `<iframe width="560" height="315" src="https://www.youtube.com/embed/${item.key}" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`;
+      });
+      
+      youtube.innerHTML = videoFrame;
+    })
+    .catch((reason) => {
+      youtube.innerHTML = 'Видео не найдено';
+      console.error(reason || reason.status);
+    });
+}
