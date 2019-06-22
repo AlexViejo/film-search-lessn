@@ -11,23 +11,25 @@ function apiSearch(event) {
     movie.innerHTML = '<h2 class="col-12 text-center text-danger">Поле поиска не должно быть пустым</h2>';
     return;
   }
+
   const server = `https://api.themoviedb.org/3/search/multi?api_key=${MY_API_KEY}&language=ru&query=` + searchText;
   movie.innerHTML = `<div class="spinner"></div>`;
 
   fetch(server)
-    .then(function (value) {
+    .then((value) => {
       if (value.status !== 200) {
         return Promise.reject(new Error(value.status));
       }
 
       return value.json();
     })
-    .then(function (output) {
+    .then((output) => {
       let inner = '';
       if (output.results.length === 0) {
         inner = '<h2 class="col-12 text-center text-info">По вашему запросу ничего не найдено</h2>';
       };
-      output.results.forEach(function (item) {
+
+      output.results.forEach((item) => {
         let nameItem = item.name || item.title;
         const poster = item.poster_path ? urlPoster + item.poster_path : './img/noposter.jpeg';
         let dataInfo = '';
@@ -49,9 +51,7 @@ function apiSearch(event) {
     .catch(function (reason) {
       movie.innerHTML = 'Что то пошло не так. Перезагрузите страницу';
       console.error(reason || reason.status);
-
     });
-
 }
 
 searchForm.addEventListener('submit', apiSearch);
@@ -84,7 +84,7 @@ function showFullInfo() {
       }
       return value.json();
     })
-    .then(function (output) {
+    .then((output) => {
       console.log(output);
       movie.innerHTML = `
       <h4 class="col-12 text-center text-info">${output.name || output.title}</h4>
@@ -111,7 +111,7 @@ function showFullInfo() {
       getVideo(typeMedia, idMedia);
 
     })
-    .catch(function (reason) {
+    .catch((reason) => {
       movie.innerHTML = 'Что то пошло не так. Перезагрузите страницу';
       console.error(reason || reason.status);
 
@@ -122,19 +122,19 @@ document.addEventListener('DOMContentLoaded', () => {
   const server = `https://api.themoviedb.org/3/trending/all/week?api_key=${MY_API_KEY}&language=ru`;
 
   fetch(server)
-    .then(function (value) {
+    .then((value) => {
       if (value.status !== 200) {
         return Promise.reject(new Error(value.status));
       }
 
       return value.json();
     })
-    .then(function (output) {
+    .then((output) => {
       let inner = '<h4 class="col-12 text-center text-info">Популярное за неделю!</h4>';
       if (output.results.length === 0) {
         inner = '<h2 class="col-12 text-center text-info">По вашему запросу ничего не найдено</h2>';
       };
-      output.results.forEach(function (item) {
+      output.results.forEach((item) => {
         let nameItem = item.name || item.title;
         let mediaType = item.title ? 'movie' : 'tv';
         const poster = item.poster_path ? urlPoster + item.poster_path : './img/noposter.jpeg';
@@ -151,12 +151,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
       addEventMedia();
     })
-    .catch(function (reason) {
+    .catch((reason) => {
       movie.innerHTML = 'Что то пошло не так. Перезагрузите страницу';
       console.error(reason || reason.status);
-
     });
-
 });
 
 function getVideo(type, id) {
